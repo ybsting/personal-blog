@@ -1,0 +1,473 @@
+---
+import { getCollection } from "astro:content";
+import PostItem from "./PostItem.astro";
+
+const posts =
+  await getCollection("posts");
+
+posts.sort(
+  (a, b) =>
+    b.data.date.getTime() -
+    a.data.date.getTime()
+);
+
+const groupedPosts =
+  new Map<
+    number,
+    typeof posts
+  >();
+
+for (const post of posts) {
+
+  const year =
+    post.data.date.getFullYear();
+
+  if (
+    !groupedPosts.has(year)
+  ) {
+
+    groupedPosts.set(
+      year,
+      []
+    );
+
+  }
+
+  groupedPosts
+    .get(year)!
+    .push(post);
+
+}
+---
+
+<section
+  class="blog"
+  id="blog"
+>
+
+  <div class="blog-inner">
+
+    {
+      Array.from(
+        groupedPosts.entries()
+      ).map(
+        ([year, yearPosts]) => (
+
+          <section
+            class="year-group"
+            data-year={year}
+          >
+
+            <div class="year-column">
+
+              <div class="year">
+                {year}
+              </div>
+
+              <div
+                class="year-line"
+                aria-hidden="true"
+              >
+
+                <span
+                  class="year-dot"
+                ></span>
+
+              </div>
+
+            </div>
+
+
+            <div class="year-posts">
+
+              {
+                yearPosts.map(
+                  (post) => (
+
+                    <PostItem
+                      slug={post.id}
+                      title={post.data.title}
+                      date={post.data.date}
+                      description={
+                        post.data.description
+                      }
+                    />
+
+                  )
+                )
+              }
+
+            </div>
+
+          </section>
+
+        )
+      )
+    }
+
+  </div>
+
+</section>
+
+
+<style>
+
+/* =====================================================
+   文章列表
+===================================================== */
+
+.blog {
+
+  position:
+    relative;
+
+  width:
+    100%;
+
+  min-height:
+    100vh;
+
+  padding-top:
+    100vh;
+
+  background:
+    rgb(
+      252,
+      252,
+      252
+    );
+
+  color:
+    #222;
+
+}
+
+
+/* =====================================================
+   底部极淡潮汐光
+===================================================== */
+
+.blog::after {
+
+  content: "";
+
+  position: absolute;
+
+  left: 50%;
+
+  bottom: 0;
+
+  width:
+    min(
+      900px,
+      80%
+    );
+
+  height:
+    1px;
+
+  transform:
+    translateX(-50%);
+
+  background:
+    linear-gradient(
+      to right,
+      transparent,
+      rgba(
+        93,
+        159,
+        197,
+        0.22
+      ),
+      transparent
+    );
+
+}
+
+
+/* =====================================================
+   正文容器
+===================================================== */
+
+.blog-inner {
+
+  position:
+    relative;
+
+  width:
+    min(
+      1080px,
+      calc(100% - 80px)
+    );
+
+  margin:
+    0 auto;
+
+  padding:
+    100px
+    0
+    150px;
+
+}
+
+
+/* =====================================================
+   年份组
+===================================================== */
+
+.year-group {
+
+  position:
+    relative;
+
+  display:
+    grid;
+
+  grid-template-columns:
+    130px
+    1fr;
+
+  column-gap:
+    42px;
+
+  margin-bottom:
+    100px;
+
+}
+
+
+/* =====================================================
+   左侧年份
+===================================================== */
+
+.year-column {
+
+  position:
+    relative;
+
+  min-height:
+    100%;
+
+}
+
+
+.year {
+
+  position:
+    sticky;
+
+  top:
+    45px;
+
+  padding-top:
+    28px;
+
+  font-family:
+    "SF Mono",
+    "Cascadia Code",
+    monospace;
+
+  font-size:
+    13px;
+
+  letter-spacing:
+    0.12em;
+
+  color:
+    #4f91b5;
+
+  transition:
+    color
+    300ms
+    ease;
+
+}
+
+
+/* =====================================================
+   时间线
+===================================================== */
+
+.year-line {
+
+  position:
+    absolute;
+
+  top:
+    72px;
+
+  right:
+    0;
+
+  width:
+    1px;
+
+  height:
+    calc(
+      100% - 72px
+    );
+
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(
+        74,
+        144,
+        184,
+        0.40
+      ),
+      rgba(
+        74,
+        144,
+        184,
+        0.08
+      )
+    );
+
+}
+
+
+/* =====================================================
+   时间线节点
+===================================================== */
+
+.year-dot {
+
+  position:
+    absolute;
+
+  top:
+    0;
+
+  left:
+    50%;
+
+  width:
+    7px;
+
+  height:
+    7px;
+
+  transform:
+    translate(
+      -50%,
+      0
+    );
+
+  border:
+    1px solid
+    rgba(
+      74,
+      144,
+      184,
+      0.72
+    );
+
+  border-radius:
+    50%;
+
+  background:
+    rgb(
+      252,
+      252,
+      252
+    );
+
+  box-shadow:
+    0 0 0 4px
+    rgba(
+      93,
+      159,
+      197,
+      0.07
+    );
+
+}
+
+
+/* =====================================================
+   文章区域
+===================================================== */
+
+.year-posts {
+
+  width:
+    100%;
+
+}
+
+
+/* =====================================================
+   手机
+===================================================== */
+
+@media (max-width: 700px) {
+
+  .blog {
+
+    padding-top:
+      100vh;
+
+  }
+
+
+  .blog-inner {
+
+    width:
+      calc(
+        100% - 40px
+      );
+
+    padding:
+      80px
+      0
+      100px;
+
+  }
+
+
+  .year-group {
+
+    display:
+      block;
+
+    margin-bottom:
+      75px;
+
+  }
+
+
+  .year-column {
+
+    min-height:
+      auto;
+
+  }
+
+
+  .year {
+
+    position:
+      static;
+
+    padding:
+      0
+      0
+      28px;
+
+    font-size:
+      12px;
+
+  }
+
+
+  .year-line {
+
+    display:
+      none;
+
+  }
+
+}
+
+</style>

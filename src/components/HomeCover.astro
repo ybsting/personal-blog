@@ -1,0 +1,1810 @@
+---
+const title = "fs² 的个人博客";
+const subtitle = "让这梦做的够长让梦中人求疯得疯";
+---
+
+<section
+  id="home-cover"
+  class="cover"
+>
+  <!-- =================================================
+       首页背景
+  ================================================== -->
+
+  <div
+    class="cover-background"
+    aria-hidden="true"
+  ></div>
+
+
+  <!-- =================================================
+       柔光
+  ================================================== -->
+
+  <div
+    class="cover-light"
+    aria-hidden="true"
+  ></div>
+
+
+  <!-- =================================================
+       文字
+  ================================================== -->
+
+  <div class="cover-content">
+
+    <h1>
+      {title}
+    </h1>
+
+    <div
+      class="typing"
+      aria-label={subtitle}
+    >
+      <span class="typing-text"></span>
+
+      <span
+        class="typing-cursor"
+        aria-hidden="true"
+      ></span>
+    </div>
+
+  </div>
+
+
+  <!-- =================================================
+       向下提示
+  ================================================== -->
+
+  <div
+    class="scroll-hint"
+    aria-hidden="true"
+  >
+    <span></span>
+  </div>
+
+
+  <!-- =================================================
+       潮汐
+  ================================================== -->
+
+  <div
+    class="waves"
+    aria-hidden="true"
+  >
+
+    <svg
+      viewBox="0 24 150 28"
+      preserveAspectRatio="none"
+      shape-rendering="auto"
+    >
+
+      <defs>
+
+        <path
+          id="gentle-wave"
+          d="M-160 44c30 0 58-18 88-18s58 18 88 18 58-18 88-18 58 18 88 18v44h-352z"
+        />
+
+      </defs>
+
+
+      <g class="parallax">
+
+        <!-- 远处潮汐 -->
+
+        <use
+          href="#gentle-wave"
+          x="48"
+          y="0"
+          class="wave wave-back"
+        />
+
+
+        <!-- 中远处潮汐 -->
+
+        <use
+          href="#gentle-wave"
+          x="48"
+          y="3"
+          class="wave wave-middle-back"
+        />
+
+
+        <!-- 中间潮汐 -->
+
+        <use
+          href="#gentle-wave"
+          x="48"
+          y="5"
+          class="wave wave-middle"
+        />
+
+
+        <!-- 最靠近人的潮汐 -->
+
+        <use
+          href="#gentle-wave"
+          x="48"
+          y="7"
+          class="wave wave-front"
+        />
+
+      </g>
+
+    </svg>
+
+  </div>
+
+</section>
+
+
+<script>
+
+  /*
+   * =====================================================
+   * DOM
+   * =====================================================
+   */
+
+  const cover =
+    document.querySelector(
+      "#home-cover"
+    );
+
+
+  if (
+    cover instanceof HTMLElement
+  ) {
+
+    const background =
+      cover.querySelector(
+        ".cover-background"
+      );
+
+
+    const light =
+      cover.querySelector(
+        ".cover-light"
+      );
+
+
+    const content =
+      cover.querySelector(
+        ".cover-content"
+      );
+
+
+    const scrollHint =
+      cover.querySelector(
+        ".scroll-hint"
+      );
+
+
+    const waves =
+      cover.querySelector(
+        ".waves"
+      );
+
+
+    const typingText =
+      cover.querySelector(
+        ".typing-text"
+      );
+
+
+    if (
+      background instanceof HTMLElement &&
+      light instanceof HTMLElement &&
+      content instanceof HTMLElement &&
+      scrollHint instanceof HTMLElement &&
+      waves instanceof HTMLElement &&
+      typingText instanceof HTMLElement
+    ) {
+
+
+      /*
+       * =================================================
+       * 打字效果
+       * =================================================
+       */
+
+      const text =
+        cover
+          .querySelector(".typing")
+          ?.getAttribute("aria-label") ?? "";
+
+
+      let typingIndex = 0;
+
+
+      /*
+       * 数字越大
+       * 打字越慢
+       */
+
+      const typingSpeed =
+        190;
+
+
+      function typeNext() {
+
+        if (
+          typingIndex >= text.length
+        ) {
+
+          return;
+
+        }
+
+
+        typingText.textContent =
+          text.slice(
+            0,
+            typingIndex + 1
+          );
+
+
+        typingIndex += 1;
+
+
+        window.setTimeout(
+          typeNext,
+          typingSpeed
+        );
+
+      }
+
+
+      /*
+       * 页面加载后稍微等待
+       */
+
+      window.setTimeout(
+        typeNext,
+        900
+      );
+
+
+      /*
+       * =================================================
+       * 页面状态
+       *
+       * cover = 封面
+       * body  = 正文
+       * =================================================
+       */
+
+      let state =
+        "cover";
+
+
+      let animating =
+        false;
+
+
+      /*
+       * =================================================
+       * 动画时间
+       *
+       * 真正的 1.4 秒
+       * =================================================
+       */
+
+      const duration =
+        1400;
+
+
+      /*
+       * =================================================
+       * 缓动
+       * =================================================
+       */
+
+      function easeInOutCubic(
+        value
+      ) {
+
+        if (
+          value < 0.5
+        ) {
+
+          return (
+            4 *
+            value *
+            value *
+            value
+          );
+
+        }
+
+
+        return (
+          1 -
+          Math.pow(
+            -2 * value + 2,
+            3
+          ) / 2
+        );
+
+      }
+
+
+      /*
+       * =================================================
+       * 更新封面
+       * =================================================
+       */
+
+      function updateCover(
+        progress
+      ) {
+
+        /*
+         * -----------------------------------------------
+         * progress
+         *
+         * 0 = 完整封面
+         * 1 = 完全进入正文
+         * -----------------------------------------------
+         */
+
+
+        /*
+         * -----------------------------------------------
+         * 封面向上移动
+         * -----------------------------------------------
+         */
+
+        const coverY =
+          -progress * 100;
+
+
+        cover.style.transform =
+          `translate3d(0, ${coverY}%, 0)`;
+
+
+        /*
+         * -----------------------------------------------
+         * 背景轻微放大
+         * -----------------------------------------------
+         */
+
+        const scale =
+          1 +
+          progress * 0.05;
+
+
+        background.style.transform =
+          `scale(${scale})`;
+
+
+        /*
+         * -----------------------------------------------
+         * 背景逐渐透明
+         * -----------------------------------------------
+         */
+
+        background.style.opacity =
+          String(
+            1 - progress
+          );
+
+
+        /*
+         * -----------------------------------------------
+         * 光线消散
+         * -----------------------------------------------
+         */
+
+        light.style.opacity =
+          String(
+            Math.max(
+              0,
+              1 -
+              progress * 1.25
+            )
+          );
+
+
+        /*
+         * -----------------------------------------------
+         * 文字离开
+         * -----------------------------------------------
+         */
+
+        const contentY =
+          -50 -
+          progress * 40;
+
+
+        content.style.transform =
+          `translate3d(-50%, ${contentY}%, 0)`;
+
+
+        content.style.opacity =
+          String(
+            Math.max(
+              0,
+              1 -
+              progress * 1.3
+            )
+          );
+
+
+        /*
+         * -----------------------------------------------
+         * 箭头
+         * -----------------------------------------------
+         */
+
+        scrollHint.style.opacity =
+          String(
+            Math.max(
+              0,
+              1 -
+              progress * 2
+            )
+          );
+
+
+        /*
+         * -----------------------------------------------
+         * 潮汐显现
+         *
+         * 封面状态：
+         * 0.45
+         *
+         * 切换过程中：
+         * 逐渐增强
+         * -----------------------------------------------
+         */
+
+        waves.style.opacity =
+          String(
+            Math.min(
+              1,
+              0.45 +
+              progress * 0.55
+            )
+          );
+
+
+        /*
+         * -----------------------------------------------
+         * 潮汐随封面产生轻微上下位移
+         * -----------------------------------------------
+         */
+
+        const waveY =
+          progress * 12;
+
+
+        waves.style.transform =
+          `translate3d(0, ${waveY}px, 0)`;
+
+      }
+
+
+      /*
+       * =================================================
+       * 封面 → 正文
+       * =================================================
+       */
+
+      function goToBody() {
+
+        if (
+          animating ||
+          state === "body"
+        ) {
+
+          return;
+
+        }
+
+
+        animating =
+          true;
+
+
+        const start =
+          performance.now();
+
+
+        /*
+         * 当前滚动位置
+         */
+
+        const startScroll =
+          window.scrollY;
+
+
+        /*
+         * 正文顶部
+         */
+
+        const targetScroll =
+          window.innerHeight;
+
+
+        function frame(
+          now
+        ) {
+
+          const raw =
+            Math.min(
+              (now - start) /
+              duration,
+              1
+            );
+
+
+          const progress =
+            easeInOutCubic(
+              raw
+            );
+
+
+          /*
+           * 页面真实滚动
+           */
+
+          const scroll =
+            startScroll +
+            (
+              targetScroll -
+              startScroll
+            ) *
+            progress;
+
+
+          window.scrollTo(
+            0,
+            scroll
+          );
+
+
+          /*
+           * 同步封面动画
+           */
+
+          updateCover(
+            progress
+          );
+
+
+          if (
+            raw < 1
+          ) {
+
+            requestAnimationFrame(
+              frame
+            );
+
+          } else {
+
+            state =
+              "body";
+
+
+            animating =
+              false;
+
+
+            /*
+             * 确保最终位置
+             */
+
+            cover.style.transform =
+              "translate3d(0, -100%, 0)";
+
+
+            background.style.opacity =
+              "0";
+
+
+            content.style.opacity =
+              "0";
+
+
+            scrollHint.style.opacity =
+              "0";
+
+
+            waves.style.transform =
+              "translate3d(0, 12px, 0)";
+
+
+            window.scrollTo(
+              0,
+              window.innerHeight
+            );
+
+          }
+
+        }
+
+
+        requestAnimationFrame(
+          frame
+        );
+
+      }
+
+
+      /*
+       * =================================================
+       * 正文 → 封面
+       * =================================================
+       */
+
+      function goToCover() {
+
+        if (
+          animating ||
+          state === "cover"
+        ) {
+
+          return;
+
+        }
+
+
+        /*
+         * 正文顶部
+         */
+
+        const bodyTop =
+          window.innerHeight;
+
+
+        /*
+         * 只有正文顶部才能返回封面
+         */
+
+        if (
+          window.scrollY >
+          bodyTop + 2
+        ) {
+
+          return;
+
+        }
+
+
+        animating =
+          true;
+
+
+        const start =
+          performance.now();
+
+
+        const startScroll =
+          window.scrollY;
+
+
+        const targetScroll =
+          0;
+
+
+        function frame(
+          now
+        ) {
+
+          const raw =
+            Math.min(
+              (now - start) /
+              duration,
+              1
+            );
+
+
+          const progress =
+            easeInOutCubic(
+              raw
+            );
+
+
+          /*
+           * 页面向上滚动
+           */
+
+          const scroll =
+            startScroll +
+            (
+              targetScroll -
+              startScroll
+            ) *
+            progress;
+
+
+          window.scrollTo(
+            0,
+            scroll
+          );
+
+
+          /*
+           * 封面反向出现
+           */
+
+          updateCover(
+            1 - progress
+          );
+
+
+          if (
+            raw < 1
+          ) {
+
+            requestAnimationFrame(
+              frame
+            );
+
+          } else {
+
+            state =
+              "cover";
+
+
+            animating =
+              false;
+
+
+            /*
+             * 恢复完整封面
+             */
+
+            cover.style.transform =
+              "translate3d(0, 0, 0)";
+
+
+            background.style.transform =
+              "scale(1)";
+
+
+            background.style.opacity =
+              "1";
+
+
+            light.style.opacity =
+              "1";
+
+
+            content.style.transform =
+              "translate3d(-50%, -50%, 0)";
+
+
+            content.style.opacity =
+              "1";
+
+
+            scrollHint.style.opacity =
+              "1";
+
+
+            waves.style.opacity =
+              "0.45";
+
+
+            waves.style.transform =
+              "translate3d(0, 0, 0)";
+
+
+            window.scrollTo(
+              0,
+              0
+            );
+
+          }
+
+        }
+
+
+        requestAnimationFrame(
+          frame
+        );
+
+      }
+
+
+      /*
+       * =================================================
+       * 鼠标滚轮
+       * =================================================
+       */
+
+      window.addEventListener(
+        "wheel",
+        (
+          event
+        ) => {
+
+          /*
+           * 动画期间
+           * 禁止浏览器自己滚动
+           */
+
+          if (
+            animating
+          ) {
+
+            event.preventDefault();
+
+            return;
+
+          }
+
+
+          /*
+           * ---------------------------------------------
+           * 封面
+           *
+           * 向下滚
+           * → 正文
+           * ---------------------------------------------
+           */
+
+          if (
+            state === "cover" &&
+            event.deltaY > 0
+          ) {
+
+            event.preventDefault();
+
+            goToBody();
+
+            return;
+
+          }
+
+
+          /*
+           * ---------------------------------------------
+           * 正文顶部
+           *
+           * 向上滚
+           * → 封面
+           * ---------------------------------------------
+           */
+
+          if (
+            state === "body" &&
+            event.deltaY < 0
+          ) {
+
+            const bodyTop =
+              window.innerHeight;
+
+
+            if (
+              window.scrollY <=
+              bodyTop + 2
+            ) {
+
+              event.preventDefault();
+
+              goToCover();
+
+            }
+
+          }
+
+        },
+        {
+          passive: false
+        }
+      );
+
+
+      /*
+       * =================================================
+       * 初始化
+       * =================================================
+       */
+
+      updateCover(
+        0
+      );
+
+    }
+
+  }
+
+</script>
+
+
+<style>
+
+/* =====================================================
+   封面
+===================================================== */
+
+.cover {
+
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 100;
+
+  width: 100vw;
+
+  height: 100vh;
+
+  overflow: hidden;
+
+  background:
+    #70b9dc;
+
+  will-change:
+    transform;
+
+}
+
+
+/* =====================================================
+   背景
+===================================================== */
+
+.cover-background {
+
+  position: absolute;
+
+  inset: -3%;
+
+  width: 106%;
+
+  height: 106%;
+
+  background-image:
+    url("/home.png");
+
+  background-size:
+    cover;
+
+  background-position:
+    center;
+
+  background-repeat:
+    no-repeat;
+
+  will-change:
+    transform,
+    opacity;
+
+}
+
+
+/* =====================================================
+   柔光
+===================================================== */
+
+.cover-light {
+
+  position: absolute;
+
+  inset: 0;
+
+  pointer-events: none;
+
+  background:
+    radial-gradient(
+      ellipse at 50% 35%,
+      rgba(
+        255,
+        255,
+        255,
+        0.07
+      ) 0%,
+      rgba(
+        255,
+        255,
+        255,
+        0
+      ) 50%
+    );
+
+}
+
+
+/* =====================================================
+   文字
+===================================================== */
+
+.cover-content {
+
+  position: absolute;
+
+  z-index: 5;
+
+  top: 43%;
+
+  left: 50%;
+
+  width: 90%;
+
+  transform:
+    translate3d(
+      -50%,
+      -50%,
+      0
+    );
+
+  text-align:
+    center;
+
+  color:
+    white;
+
+  will-change:
+    transform,
+    opacity;
+
+}
+
+
+/* =====================================================
+   主标题
+===================================================== */
+
+.cover-content h1 {
+
+  margin:
+    0 0 22px;
+
+  font-family:
+    "Noto Serif SC",
+    "Songti SC",
+    "STSong",
+    serif;
+
+  font-size:
+    clamp(
+      30px,
+      5vw,
+      58px
+    );
+
+  font-weight:
+    400;
+
+  letter-spacing:
+    0.04em;
+
+  color:
+    #ffffff;
+
+  text-shadow:
+
+    0 2px 8px
+    rgba(
+      15,
+      82,
+      150,
+      0.90
+    ),
+
+    0 7px 24px
+    rgba(
+      10,
+      105,
+      190,
+      0.78
+    ),
+
+    0 14px 42px
+    rgba(
+      8,
+      115,
+      205,
+      0.62
+    ),
+
+    0 24px 68px
+    rgba(
+      5,
+      120,
+      215,
+      0.48
+    ),
+
+    0 36px 100px
+    rgba(
+      8,
+      115,
+      210,
+      0.34
+    );
+
+}
+
+
+/* =====================================================
+   打字文字
+===================================================== */
+
+.typing {
+
+  min-height:
+    32px;
+
+  font-family:
+    "Noto Serif SC",
+    "Songti SC",
+    "STSong",
+    serif;
+
+  font-size:
+    clamp(
+      16px,
+      2vw,
+      23px
+    );
+
+  line-height:
+    1.7;
+
+  letter-spacing:
+    0.08em;
+
+  color:
+    rgba(
+      255,
+      255,
+      255,
+      0.96
+    );
+
+  text-shadow:
+
+    0 2px 8px
+    rgba(
+      10,
+      75,
+      135,
+      0.82
+    ),
+
+    0 8px 24px
+    rgba(
+      10,
+      105,
+      180,
+      0.55
+    );
+
+}
+
+
+/* =====================================================
+   打字光标
+===================================================== */
+
+.typing-cursor {
+
+  display:
+    inline-block;
+
+  width:
+    1px;
+
+  height:
+    1.05em;
+
+  margin-left:
+    5px;
+
+  vertical-align:
+    -0.12em;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.85
+    );
+
+  animation:
+    cursorBlink
+    0.9s
+    ease-in-out
+    infinite;
+
+}
+
+
+@keyframes cursorBlink {
+
+  0%,
+  45% {
+
+    opacity:
+      1;
+
+  }
+
+  46%,
+  100% {
+
+    opacity:
+      0;
+
+  }
+
+}
+
+
+/* =====================================================
+   向下箭头
+===================================================== */
+
+.scroll-hint {
+
+  position: absolute;
+
+  z-index: 6;
+
+  left: 50%;
+
+  bottom: 42px;
+
+  width: 26px;
+
+  height: 38px;
+
+  transform:
+    translateX(-50%);
+
+}
+
+
+.scroll-hint::before {
+
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+
+  left: 50%;
+
+  width: 1px;
+
+  height: 25px;
+
+  transform:
+    translateX(-50%);
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.88
+    );
+
+}
+
+
+.scroll-hint span {
+
+  position: absolute;
+
+  left: 50%;
+
+  bottom: 4px;
+
+  width: 9px;
+
+  height: 9px;
+
+  transform:
+    translateX(-50%)
+    rotate(45deg);
+
+  border-right:
+    1px solid
+    rgba(
+      255,
+      255,
+      255,
+      0.92
+    );
+
+  border-bottom:
+    1px solid
+    rgba(
+      255,
+      255,
+      255,
+      0.92
+    );
+
+  animation:
+    arrowFloat
+    1.8s
+    ease-in-out
+    infinite;
+
+}
+
+
+@keyframes arrowFloat {
+
+  0%,
+  100% {
+
+    transform:
+      translate(
+        -50%,
+        0
+      )
+      rotate(45deg);
+
+  }
+
+  50% {
+
+    transform:
+      translate(
+        -50%,
+        6px
+      )
+      rotate(45deg);
+
+  }
+
+}
+
+
+/* =====================================================
+   潮汐容器
+===================================================== */
+
+.waves {
+
+  position: absolute;
+
+  z-index: 4;
+
+  left: 0;
+
+  bottom: -1px;
+
+  width: 100%;
+
+  /*
+   * 比原来稍微高一点
+   *
+   * 这样进入正文的时候
+   * 能看到更明显的“潮水”
+   */
+
+  height:
+    7.5rem;
+
+  min-height:
+    7.5rem;
+
+  opacity:
+    0.45;
+
+  pointer-events:
+    none;
+
+  /*
+   * 不参与布局
+   */
+
+  will-change:
+    transform,
+    opacity;
+
+}
+
+
+/* =====================================================
+   SVG
+===================================================== */
+
+.waves svg {
+
+  display:
+    block;
+
+  width:
+    100%;
+
+  height:
+    100%;
+
+}
+
+
+/* =====================================================
+   波浪公共属性
+===================================================== */
+
+.parallax > use {
+
+  /*
+   * transform-origin 很重要
+   *
+   * 让 SVG 波浪在自己的区域内移动
+   */
+
+  transform-box:
+    fill-box;
+
+  transform-origin:
+    center;
+
+}
+
+
+/* =====================================================
+   第一层
+   最远处
+===================================================== */
+
+.wave-back {
+
+  fill:
+    rgba(
+      242,
+      250,
+      253,
+      0.20
+    );
+
+  animation:
+    waveMoveBack
+    28s
+    ease-in-out
+    infinite alternate;
+
+}
+
+
+/* =====================================================
+   第二层
+===================================================== */
+
+.wave-middle-back {
+
+  fill:
+    rgba(
+      235,
+      248,
+      253,
+      0.28
+    );
+
+  animation:
+    waveMoveMiddleBack
+    22s
+    ease-in-out
+    infinite alternate;
+
+}
+
+
+/* =====================================================
+   第三层
+===================================================== */
+
+.wave-middle {
+
+  fill:
+    rgba(
+      225,
+      244,
+      251,
+      0.40
+    );
+
+  animation:
+    waveMoveMiddle
+    17s
+    ease-in-out
+    infinite alternate;
+
+}
+
+
+/* =====================================================
+   第四层
+   最靠近人的潮水
+===================================================== */
+
+.wave-front {
+
+  fill:
+    rgba(
+      210,
+      238,
+      249,
+      0.54
+    );
+
+  animation:
+    waveMoveFront
+    12s
+    ease-in-out
+    infinite alternate;
+
+}
+
+
+/* =====================================================
+   最远层移动
+===================================================== */
+
+@keyframes waveMoveBack {
+
+  0% {
+
+    transform:
+      translate3d(
+        -70px,
+        1px,
+        0
+      );
+
+  }
+
+  50% {
+
+    transform:
+      translate3d(
+        15px,
+        -2px,
+        0
+      );
+
+  }
+
+  100% {
+
+    transform:
+      translate3d(
+        75px,
+        1px,
+        0
+      );
+
+  }
+
+}
+
+
+/* =====================================================
+   第二层移动
+===================================================== */
+
+@keyframes waveMoveMiddleBack {
+
+  0% {
+
+    transform:
+      translate3d(
+        -85px,
+        0,
+        0
+      );
+
+  }
+
+  50% {
+
+    transform:
+      translate3d(
+        5px,
+        2px,
+        0
+      );
+
+  }
+
+  100% {
+
+    transform:
+      translate3d(
+        90px,
+        -1px,
+        0
+      );
+
+  }
+
+}
+
+
+/* =====================================================
+   第三层移动
+===================================================== */
+
+@keyframes waveMoveMiddle {
+
+  0% {
+
+    transform:
+      translate3d(
+        -100px,
+        2px,
+        0
+      );
+
+  }
+
+  50% {
+
+    transform:
+      translate3d(
+        10px,
+        -3px,
+        0
+      );
+
+  }
+
+  100% {
+
+    transform:
+      translate3d(
+        105px,
+        1px,
+        0
+      );
+
+  }
+
+}
+
+
+/* =====================================================
+   最前层移动
+===================================================== */
+
+@keyframes waveMoveFront {
+
+  0% {
+
+    transform:
+      translate3d(
+        -115px,
+        2px,
+        0
+      );
+
+  }
+
+  50% {
+
+    transform:
+      translate3d(
+        0,
+        -4px,
+        0
+      );
+
+  }
+
+  100% {
+
+    transform:
+      translate3d(
+        120px,
+        2px,
+        0
+      );
+
+  }
+
+}
+
+
+/* =====================================================
+   潮汐轻微呼吸
+===================================================== */
+
+.waves::after {
+
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+
+  right: 0;
+
+  bottom: 0;
+
+  height: 35%;
+
+  pointer-events: none;
+
+  background:
+    linear-gradient(
+      to top,
+      rgba(
+        235,
+        247,
+        252,
+        0.10
+      ),
+      rgba(
+        235,
+        247,
+        252,
+        0
+      )
+    );
+
+  opacity:
+    0.7;
+
+}
+
+
+/* =====================================================
+   手机
+===================================================== */
+
+@media (max-width: 700px) {
+
+  .cover-content {
+
+    top:
+      44%;
+
+  }
+
+
+  .cover-content h1 {
+
+    margin-bottom:
+      18px;
+
+    font-size:
+      30px;
+
+  }
+
+
+  .typing {
+
+    font-size:
+      16px;
+
+    letter-spacing:
+      0.04em;
+
+  }
+
+
+  .scroll-hint {
+
+    bottom:
+      32px;
+
+  }
+
+
+  .waves {
+
+    height:
+      5.5rem;
+
+    min-height:
+      5.5rem;
+
+  }
+
+}
+
+</style>

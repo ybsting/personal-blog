@@ -1,0 +1,486 @@
+---
+interface Props {
+  slug: string;
+  title: string;
+  date: Date;
+  description?: string;
+}
+
+const {
+  slug,
+  title,
+  date,
+  description,
+} = Astro.props;
+
+const formattedDate =
+  date
+    .toLocaleDateString(
+      "zh-CN",
+      {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      }
+    )
+    .replaceAll("/", ".");
+---
+
+<a
+  class="post"
+  href={`/posts/${slug}`}
+>
+
+  <div class="post-date">
+    {formattedDate}
+  </div>
+
+
+  <div class="post-main">
+
+    <span
+      class="post-mark"
+      aria-hidden="true"
+    ></span>
+
+    <h3>
+      {title}
+    </h3>
+
+    {
+      description && (
+        <p>
+          {description}
+        </p>
+      )
+    }
+
+  </div>
+
+
+  <div
+    class="post-arrow"
+    aria-hidden="true"
+  >
+    →
+  </div>
+
+</a>
+
+
+<style>
+
+/* =====================================================
+   文章项目
+===================================================== */
+
+.post {
+
+  position:
+    relative;
+
+  display:
+    grid;
+
+  grid-template-columns:
+    92px
+    1fr
+    30px;
+
+  column-gap:
+    28px;
+
+  padding:
+    30px
+    0
+    34px;
+
+  text-decoration:
+    none;
+
+  border-bottom:
+    1px solid
+    rgba(
+      20,
+      90,
+      135,
+      0.075
+    );
+
+  transition:
+    transform
+    320ms
+    ease,
+
+    border-color
+    320ms
+    ease;
+
+}
+
+
+/* =====================================================
+   Hover
+===================================================== */
+
+.post:hover {
+
+  transform:
+    translateX(8px);
+
+  border-bottom-color:
+    rgba(
+      74,
+      144,
+      184,
+      0.25
+    );
+
+}
+
+
+/* =====================================================
+   日期
+===================================================== */
+
+.post-date {
+
+  padding-top:
+    7px;
+
+  font-family:
+    "SF Mono",
+    "Cascadia Code",
+    monospace;
+
+  font-size:
+    11px;
+
+  letter-spacing:
+    0.04em;
+
+  color:
+    rgba(
+      63,
+      134,
+      173,
+      0.72
+    );
+
+  white-space:
+    nowrap;
+
+  transition:
+    color
+    320ms
+    ease;
+
+}
+
+
+.post:hover
+.post-date {
+
+  color:
+    #3f86ad;
+
+}
+
+
+/* =====================================================
+   文章主体
+===================================================== */
+
+.post-main {
+
+  position:
+    relative;
+
+  padding-left:
+    16px;
+
+}
+
+
+/* =====================================================
+   蓝色潮汐标记
+===================================================== */
+
+.post-mark {
+
+  position:
+    absolute;
+
+  left:
+    0;
+
+  top:
+    8px;
+
+  width:
+    2px;
+
+  height:
+    18px;
+
+  border-radius:
+    2px;
+
+  background:
+    rgba(
+      93,
+      159,
+      197,
+      0.28
+    );
+
+  transition:
+    height
+    320ms
+    ease,
+
+    background
+    320ms
+    ease,
+
+    box-shadow
+    320ms
+    ease;
+
+}
+
+
+.post:hover
+.post-mark {
+
+  height:
+    30px;
+
+  background:
+    #5d9fc5;
+
+  box-shadow:
+    0 0 12px
+    rgba(
+      93,
+      159,
+      197,
+      0.28
+    );
+
+}
+
+
+/* =====================================================
+   标题
+===================================================== */
+
+.post-main h3 {
+
+  margin:
+    0
+    0
+    10px;
+
+  font-family:
+    "Noto Serif SC",
+    "Songti SC",
+    "STSong",
+    serif;
+
+  font-size:
+    clamp(
+      21px,
+      2.1vw,
+      27px
+    );
+
+  font-weight:
+    400;
+
+  line-height:
+    1.45;
+
+  letter-spacing:
+    0.01em;
+
+  color:
+    #252525;
+
+  transition:
+    color
+    320ms
+    ease;
+
+}
+
+
+.post:hover
+.post-main h3 {
+
+  color:
+    #3f86ad;
+
+}
+
+
+/* =====================================================
+   描述
+===================================================== */
+
+.post-main p {
+
+  margin:
+    0;
+
+  max-width:
+    640px;
+
+  font-size:
+    14px;
+
+  line-height:
+    1.9;
+
+  color:
+    rgba(
+      0,
+      0,
+      0,
+      0.46
+    );
+
+}
+
+
+/* =====================================================
+   箭头
+===================================================== */
+
+.post-arrow {
+
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    flex-end;
+
+  padding-top:
+    3px;
+
+  font-family:
+    sans-serif;
+
+  font-size:
+    18px;
+
+  color:
+    #5d9fc5;
+
+  opacity:
+    0;
+
+  transform:
+    translateX(-5px);
+
+  transition:
+    opacity
+    320ms
+    ease,
+
+    transform
+    320ms
+    ease;
+
+}
+
+
+.post:hover
+.post-arrow {
+
+  opacity:
+    1;
+
+  transform:
+    translateX(0);
+
+}
+
+
+/* =====================================================
+   手机
+===================================================== */
+
+@media (max-width: 700px) {
+
+  .post {
+
+    grid-template-columns:
+      1fr
+      24px;
+
+    column-gap:
+      10px;
+
+    padding:
+      26px
+      0
+      30px;
+
+  }
+
+
+  .post-date {
+
+    grid-column:
+      1 / -1;
+
+    padding:
+      0;
+
+    margin-bottom:
+      10px;
+
+  }
+
+
+  .post-main {
+
+    padding-left:
+      14px;
+
+  }
+
+
+  .post-main h3 {
+
+    font-size:
+      21px;
+
+  }
+
+
+  .post-main p {
+
+    font-size:
+      13px;
+
+    line-height:
+      1.8;
+
+  }
+
+
+  .post:hover {
+
+    transform:
+      translateX(5px);
+
+  }
+
+}
+
+</style>
