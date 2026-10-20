@@ -1,0 +1,26 @@
+---
+title: "wsl2"
+date: 2026-10-20
+description: "wsl2的常用指令。"
+---
+
+- 查看所有WSL发行版及运行状态
+```
+wsl --list --verbose
+```
+```
+PS C:\Windows\system32> wsl --list --verbose
+  NAME              STATE           VERSION
+* docker-desktop    Stopped         2
+  Ubuntu-22.04      Running         2
+```
+
+- 启动ubuntu
+```
+wsl -d Ubuntu-22.04
+```
+
+- 退出ubuntu
+```
+exit
+```
