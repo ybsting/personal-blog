@@ -981,6 +981,24 @@ const formattedDate =
   display:
     block;
 
+  /*
+   * Markdown 图片默认按原始尺寸展示。
+   *
+   * width/height 设为 auto：
+   *   覆盖 Astro 生成的 width/height 属性带来的固定尺寸，
+   *   避免图片超出容器时被纵向拉伸，保证横纵等比缩放。
+   *
+   * max-width: 100%：
+   *   图片宽度不超过正文容器；超出时按原比例缩小，
+   *   未超出时保持原图尺寸。
+   */
+
+  width:
+    auto;
+
+  height:
+    auto;
+
   max-width:
     100%;
 
